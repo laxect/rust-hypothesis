@@ -116,8 +116,8 @@ fn is_default<T: Default + PartialEq>(t: &T) -> bool {
 }
 
 pub fn serde_parse<'a, T: Deserialize<'a>>(text: &'a str) -> Result<T, errors::HypothesisError> {
-    serde_json::from_str::<T>(&text).map_err(|e| errors::HypothesisError::APIError {
-        source: serde_json::from_str::<errors::APIError>(&text).unwrap_or_default(),
+    serde_json::from_str::<T>(text).map_err(|e| errors::HypothesisError::APIError {
+        source: serde_json::from_str::<errors::APIError>(text).unwrap_or_default(),
         serde_error: Some(e),
         raw_text: text.to_owned(),
     })
@@ -201,7 +201,7 @@ impl Hypothesis {
                 suggestion: "Set the environment variable HYPOTHESIS_KEY to your personal API key"
                     .into(),
             })?;
-        Ok(Self::new(&username, &developer_key)?)
+        Self::new(&username, &developer_key)
     }
 
     /// Create a new annotation
@@ -246,7 +246,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Annotation>(&text)?)
+        serde_parse::<Annotation>(&text)
     }
 
     /// Create many new annotations
@@ -294,7 +294,7 @@ impl Hypothesis {
             .iter()
             .map(|a| self.create_annotation(a))
             .collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        async { try_join_all(futures).await }.await
     }
 
     /// Update an existing annotation
@@ -340,7 +340,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Annotation>(&text)?)
+        serde_parse::<Annotation>(&text)
     }
 
     /// Update many annotations at once
@@ -350,9 +350,9 @@ impl Hypothesis {
     ) -> Result<Vec<Annotation>, HypothesisError> {
         let futures: Vec<_> = annotations
             .iter()
-            .map(|a| self.update_annotation(&a))
+            .map(|a| self.update_annotation(a))
             .collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        async { try_join_all(futures).await }.await
     }
 
     /// Search for annotations with optional filters
@@ -700,7 +700,7 @@ impl Hypothesis {
             .zip(descriptions.iter())
             .map(|(name, description)| self.create_group(name, description.as_deref()))
             .collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        async { try_join_all(futures).await }.await
     }
 
     /// Fetch a single Group resource.
@@ -751,7 +751,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Group>(&text)?)
+        serde_parse::<Group>(&text)
     }
 
     /// Fetch multiple groups by ID
@@ -765,7 +765,7 @@ impl Hypothesis {
             .zip(expands.into_iter())
             .map(|(id, expand)| self.fetch_group(id, expand))
             .collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        async { try_join_all(futures).await }.await
     }
 
     /// Update a Group resource.
@@ -810,7 +810,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Group>(&text)?)
+        serde_parse::<Group>(&text)
     }
 
     /// Update multiple groups
@@ -828,7 +828,7 @@ impl Hypothesis {
                 self.update_group(id, name.as_deref(), description.as_deref())
             })
             .collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        async { try_join_all(futures).await }.await
     }
 
     /// Fetch a list of all members (users) in a group. Returned user resource only contains public-facing user data.
@@ -860,7 +860,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Vec<Member>>(&text)?)
+        serde_parse::<Vec<Member>>(&text)
     }
 
     /// Remove yourself from a group.
@@ -914,7 +914,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<UserProfile>(&text)?)
+        serde_parse::<UserProfile>(&text)
     }
 
     /// Fetch the groups for which the currently-authenticated user is a member.
@@ -941,7 +941,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Vec<Group>>(&text)?)
+        serde_parse::<Vec<Group>>(&text)
     }
 }
 
