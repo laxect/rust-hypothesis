@@ -28,7 +28,7 @@ color-eyre = { version = "0.6.1", optional = true }
 structopt = { version = "0.3.26", optional = true }
 
 # API calls
-reqwest = { version = "0.11.10", features = ["json"], default-features = false }
+reqwest = { version = "0.11.10", features = ["json"] }
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
 futures = "0.3.21"
 thiserror = "1.0.30"
