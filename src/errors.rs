@@ -7,16 +7,16 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum HypothesisError {
-    #[error("Make sure input fields are valid")]
+    #[error("Make sure input fields are valid: {source}")]
     APIError {
         #[source]
         source: APIError,
         serde_error: Option<serde_json::Error>,
         raw_text: String,
     },
-    #[error("Invalid header value")]
+    #[error("Invalid header value: {0}")]
     HeaderError(#[from] InvalidHeaderValue),
-    #[error("Reqwest error")]
+    #[error("Reqwest error: {0}")]
     ReqwestError(#[from] reqwest::Error),
     #[error("{suggestion:?}")]
     EnvironmentError {
@@ -24,11 +24,11 @@ pub enum HypothesisError {
         source: std::env::VarError,
         suggestion: String,
     },
-    #[error("JSON format error")]
+    #[error("JSON format error: {0}")]
     SerdeError(#[from] serde_json::Error),
-    #[error("Time format error")]
+    #[error("Time format error: {0}")]
     TimeError(#[from] time::error::Error),
-    #[error("Couldn't parse URL")]
+    #[error("Couldn't parse URL: {0}")]
     URLError(#[from] url::ParseError),
     #[error("Builder error: {0}")]
     BuilderError(String),
