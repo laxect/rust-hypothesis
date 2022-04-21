@@ -26,6 +26,8 @@ pub enum HypothesisError {
     },
     #[error("JSON format error")]
     SerdeError(#[from] serde_json::Error),
+    #[error("Time format error")]
+    TimeError(#[from] time::error::Error),
     #[error("Couldn't parse URL")]
     URLError(#[from] url::ParseError),
     #[error("Builder error: {0}")]

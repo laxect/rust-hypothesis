@@ -93,6 +93,7 @@ use std::{env, fmt};
 use futures::future::try_join_all;
 use reqwest::{header, Url};
 use serde::{Deserialize, Serialize};
+use time::format_description::well_known::Rfc3339;
 
 use crate::annotations::{Annotation, InputAnnotation, SearchQuery};
 use crate::errors::HypothesisError;
@@ -422,7 +423,10 @@ impl Hypothesis {
             if next.is_empty() {
                 break;
             }
-            query.search_after = next[next.len() - 1].updated.to_rfc3339();
+            query.search_after = next[next.len() - 1]
+                .updated
+                .format(&Rfc3339)
+                .map_err(time::Error::Format)?;
             annotations.extend_from_slice(&next);
         }
         Ok(annotations)
@@ -462,7 +466,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Annotation>(&text)?)
+        serde_parse::<Annotation>(&text)
     }
 
     /// Fetch multiple annotations by ID
@@ -471,7 +475,7 @@ impl Hypothesis {
         ids: &[String],
     ) -> Result<Vec<Annotation>, HypothesisError> {
         let futures: Vec<_> = ids.iter().map(|id| self.fetch_annotation(id)).collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        try_join_all(futures).await
     }
 
     /// Delete annotation by ID
@@ -519,7 +523,7 @@ impl Hypothesis {
     /// Delete multiple annotations by ID
     pub async fn delete_annotations(&self, ids: &[String]) -> Result<Vec<bool>, HypothesisError> {
         let futures: Vec<_> = ids.iter().map(|id| self.delete_annotation(id)).collect();
-        Ok(async { try_join_all(futures).await }.await?)
+        try_join_all(futures).await
     }
 
     /// Flag an annotation
@@ -643,7 +647,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Vec<Group>>(&text)?)
+        serde_parse(&text)
     }
 
     /// Create a new, private group for the currently-authenticated user.
@@ -682,7 +686,7 @@ impl Hypothesis {
             .text()
             .await
             .map_err(HypothesisError::ReqwestError)?;
-        Ok(serde_parse::<Group>(&text)?)
+        serde_parse(&text)
     }
 
     /// Create multiple groups

@@ -2,10 +2,10 @@
 
 use std::collections::HashMap;
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "cli")]
 use structopt::StructOpt;
+use time::OffsetDateTime;
 
 use crate::{errors, is_default, UserAccountID};
 
@@ -103,7 +103,7 @@ impl InputAnnotationBuilder {
     /// Builds a new `InputAnnotation`.
     pub fn build(&self) -> Result<InputAnnotation, errors::HypothesisError> {
         self.builder()
-            .map_err(errors::HypothesisError::BuilderError)
+            .map_err(|e| errors::HypothesisError::BuilderError(e.to_string()))
     }
 }
 
@@ -152,7 +152,7 @@ impl DocumentBuilder {
     /// Builds a new `Document`.
     pub fn build(&self) -> Result<Document, errors::HypothesisError> {
         self.builder()
-            .map_err(errors::HypothesisError::BuilderError)
+            .map_err(|e| errors::HypothesisError::BuilderError(e.to_string()))
     }
 }
 
@@ -183,9 +183,9 @@ pub struct Annotation {
     /// Annotation ID
     pub id: String,
     /// Date of creation
-    pub created: DateTime<Utc>,
+    pub created: OffsetDateTime,
     /// Date of last update
-    pub updated: DateTime<Utc>,
+    pub updated: OffsetDateTime,
     /// User account ID in the format "acct:<username>@<authority>"
     pub user: UserAccountID,
     /// URL of document this annotation is attached to
@@ -247,7 +247,7 @@ impl TargetBuilder {
     /// Builds a new `Target`.
     pub fn build(&self) -> Result<Target, errors::HypothesisError> {
         self.builder()
-            .map_err(errors::HypothesisError::BuilderError)
+            .map_err(|e| errors::HypothesisError::BuilderError(e.to_string()))
     }
 }
 
@@ -460,7 +460,7 @@ impl SearchQueryBuilder {
     /// Builds a new `SearchQuery`.
     pub fn build(&self) -> Result<SearchQuery, errors::HypothesisError> {
         self.builder()
-            .map_err(errors::HypothesisError::BuilderError)
+            .map_err(|e| errors::HypothesisError::BuilderError(e.to_string()))
     }
 }
 
