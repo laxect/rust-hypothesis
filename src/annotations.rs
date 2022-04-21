@@ -183,8 +183,10 @@ pub struct Annotation {
     /// Annotation ID
     pub id: String,
     /// Date of creation
+    #[serde(with = "time::serde::rfc3339")]
     pub created: OffsetDateTime,
     /// Date of last update
+    #[serde(with = "time::serde::rfc3339")]
     pub updated: OffsetDateTime,
     /// User account ID in the format "acct:<username>@<authority>"
     pub user: UserAccountID,

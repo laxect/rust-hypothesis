@@ -7,7 +7,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum HypothesisError {
-    #[error("Make sure input fields are valid: {source}")]
+    #[error("Make sure input fields are valid:\n{source}\n{raw_text}")]
     APIError {
         #[source]
         source: APIError,
