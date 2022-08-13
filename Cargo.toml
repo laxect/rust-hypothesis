@@ -1,32 +1,16 @@
 [package]
-name = "hypothesis"
-version = "0.10.2"
-authors = ["Ninjani"]
+name = "hypothesis-rs"
+version = "0.11.0"
+authors = ["Ninjani", "Gyara"]
 edition = "2021"
-description = "a Rust wrapper and CLI for the Hypothesis API"
-repository = "https://github.com/out-of-cheese-error/rust-hypothesis"
+description = "a Fork of hypothesis and fix some problem."
+repository = "https://github.com/laxect/rust-hypothesis"
 readme = "README.md"
 license = "MIT"
-keywords = ["hypothesis", "annotation", "api", "cli"]
-categories = ["api-bindings", "command-line-utilities"]
-
-[features]
-default = ["cli"]
-
-# Feature required for hypothesis the CLI application.
-# Disable (set default-features=false) if using as a Rust crate.
-cli = [
-    "structopt",
-    "eyre",
-    "color-eyre"
-]
+keywords = ["hypothesis", "annotation", "api"]
+categories = ["api-bindings"]
 
 [dependencies]
-# For CLI
-eyre = { version = "0.6.8", optional = true }
-color-eyre = { version = "0.6.1", optional = true }
-structopt = { version = "0.3.26", optional = true }
-
 # API calls
 reqwest = { version = "0.11.10", features = ["json"] }
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
